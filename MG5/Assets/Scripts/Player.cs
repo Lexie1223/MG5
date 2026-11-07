@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     // ??? _agent
 
     // STEP 1 -----------------------------------------------------------------
-
+    private NavMeshAgent _agent;
 
     // STEP 4 -----------------------------------------------------------------
     // Next, we are going to add a teleport ability to the player. 
@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     
 
     // STEP 4 -----------------------------------------------------------------
-
+    private Vector3 _lastPosition;
     private Camera _mainCamera;
     private RaycastHit _raycastHit;
     private bool _raycastSuccessful = false;
@@ -47,12 +47,13 @@ public class Player : MonoBehaviour
     //      to use GetComponent to grab this GameObject's NavMeshAgent and store
     //      it in the _agent MEMBER VARIABLE.
     //
-    //private void ????()
-    //{
-    //
-    //    _mainCamera = Camera.main;
-    //    _animator = GetComponent<Animator>();
-    //}
+    private void Start()
+    {
+        _mainCamera = Camera.main;
+        _animator = GetComponent<Animator>();
+        _agent = GetComponent<NavMeshAgent>();
+        _lastPosition = transform.position;
+    }
     // STEP 2 -----------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -66,6 +67,8 @@ public class Player : MonoBehaviour
             if (_raycastSuccessful)
             {
                 Vector3 mouseHitPosition = _raycastHit.point;
+                _lastPosition = transform.position;
+                _agent.SetDestination(mouseHitPosition);
 
                 // STEP 3 -----------------------------------------------------
                 // Inside this Update method, I've already written code for you
@@ -107,7 +110,10 @@ public class Player : MonoBehaviour
 
 
         // STEP 6 -------------------------------------------------------------
-
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _agent.Warp(_lastPosition);
+        }
         // Uncomment the below line to fix the Pudu's animation if you want.
         //_animator.SetBool("isMoving", _agent.velocity.magnitude > 0.0f);
     }
